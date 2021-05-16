@@ -1,19 +1,4 @@
-# Concordance
-
-**Problem Statement**: Given an arbitrary text document written in English,
-write a program that will generate a concordance, i.e. an alphabetical list
-of all word occurrences, labeled with word frequencies. As a bonus: label
-each word with the sentence numbers in which each word occurrence appeared.
-
-See the problem statement in the original formatted pdf
-[problem.pdf](problem.pdf). It includes sample formatted output which
-implies additional problem requirements and behavior.
-
-This solution employs a brute force approach. The sentence parsing and
-tokenizing can likely be parallelized using a MapReduce approach which
-would likely be for more performant for very large or stream data sets.
-
-# Brute Force Approach
+# Concordance: Brute Force Approach
 
 Parse for sentences:
 - if a sentence delimiter is not found, append line to sentence
@@ -89,7 +74,7 @@ A-Z are ordered before a-z. So all words must be converted to lowercase
 regardless of their part-of-speech when adding them to the trie; however,
 the case-correct words can be stored as values in a StringTrie.
 
-See ```util/trie-test.py``` for an example demonstrating the CharTrie
+See `util/trie-test.py` for an example demonstrating the CharTrie
 is insufficient to deal with the ordering of proper nouns, and the
 StringTrie solves this iterating over values when storing keys as lowercase
 and original case as values. 
@@ -134,16 +119,9 @@ plus 1 space.
 
 ## Running
 
-Create a virtual environment.
+Active the virtual environment.
 ```
-> python -m venv concordance
-> concordance\Scripts\activate
-```
-
-Install the project requirements.
-```
-(concordance) > cd <this_project>
-(concordance) > pip install -r requirements.txt
+> source <env>/concordance/Scripts/activate
 ```
 
 Run the concordance with an input file.
@@ -151,15 +129,22 @@ Run the concordance with an input file.
 (concordance) > python concordance.py --input res\example.txt
 ```
 
+Save concordance output.
+```
+(concordance) > python concordance.py --input res\example.txt >
+    output\example.concordance.txt
+```
+
+
 ## Examples
 
-The ```/res``` folder contains a couple examples.
+The `/res` folder contains a couple examples.
 
-* ```example.txt``` is the text provided in the problem statement.
-* ```20k.txt``` is approx. 20k words of random "Lorem ipsum" text.
-* ```turing.txt``` is a rudimentary copy of Alan Turing's "Turing Test" paper.
+* `example.txt` is the text provided in the problem statement.
+* `20k.txt` is approx. 20k words of random "Lorem ipsum" text.
+* `turing.txt` is a rudimentary copy of Alan Turing's "Turing Test" paper.
 
-The ```/output``` folder contains the results of the concordance
+The `/output` folder contains the results of the concordance
 run against those example inputs.
 
 
