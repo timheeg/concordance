@@ -15,6 +15,9 @@ implies additional problem requirements and behavior.
 For details about that design approach and solution,
 see [brute/README.md](brute/README.md).
 
+### MapReduce
+For details about that design approach and solution,
+see [mr/README.md](mr/README.md).
 
 ## Virtual Environment
 
