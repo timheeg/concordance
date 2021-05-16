@@ -91,6 +91,10 @@ K :  ac,, adipiscing, aliquam, amet,, blandit, commodo, consectetur, dapibus, di
 V :  ac,, adipiscing, Aliquam, amet,, blandit, commodo, consectetur, dapibus, dictum, dolor, efficitur., elit., enim, hendrerit, in, ipsum, lacus,, Lorem, massa., metus, nisi, nisl., non, ornare,, Pellentesque, pretium, quis, Quisque, Sed, sit, suscipit., tellus,, tincidunt, tortor, tristique, varius, varius,, velit
 ```
 
+This solution stores each word as lowercase in the trie (keys) for sorting and
+stores a list of each individual case variation word as the value.  
+
+
 ## Abbreviations
 
 The problem example solution shows the word "i.e." in the concordance.

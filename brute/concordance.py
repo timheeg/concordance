@@ -16,20 +16,24 @@ class Concordance:
         offset = idx % 26
         letters = list(string.ascii_lowercase)
         letter = letters[offset]
-        width = int(len(self.trie) / 26) + 3
+        count = 0
+        for values in self.trie.values():
+            count += len(values)
+        width = int(count / 26) + 3
         return '{}.'.format(letter.ljust(increment + 1, letter)).ljust(width)
 
     def output(self):
         idx = 0
-        for value in self.trie.values():
-            sent_idx = self.sent_map[value.lower()]
-            line = '{}{} {{{}:{}}}'.format(
-                self._item_prefix(idx),
-                value.ljust(self.max_word_len+4),
-                len(sent_idx),
-                ','.join('{}'.format(i) for i in sent_idx))
-            print(line)
-            idx += 1
+        for key in self.trie.keys():
+            for word in self.trie[key]:
+                sent_idx = self.sent_map[word]
+                line = '{}{} {{{}:{}}}'.format(
+                    self._item_prefix(idx),
+                    word.ljust(self.max_word_len+4),
+                    len(sent_idx),
+                    ','.join('{}'.format(i) for i in sent_idx))
+                print(line)
+                idx += 1
 
     def process_sentence(self, sentence, index):
         doc = self.nlp(sentence)
@@ -43,13 +47,19 @@ class Concordance:
                 self.max_word_len = len(word)
 
             # if a proper noun, store the word as-is, otherwise convert to lowercase
-            self.trie[word.lower()] = word if token.pos_ == 'PROPN' else word.lower()
+            word = word if token.pos_ == 'PROPN' else word.lower()
+
+            if word.lower() in self.trie:
+                if word not in self.trie[word.lower()]:
+                    self.trie[word.lower()].append(word)
+            else:
+                self.trie[word.lower()] = [word]
 
             # add the sent index to the map
-            if word.lower() in self.sent_map:
-                self.sent_map[word.lower()].append(index)
+            if word in self.sent_map:
+                self.sent_map[word].append(index)
             else:
-                self.sent_map[word.lower()] = [index]
+                self.sent_map[word] = [index]
 
     def get_sentences(self, filename):
         with open(filename) as input_file:
