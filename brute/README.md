@@ -126,12 +126,12 @@ Active the virtual environment.
 
 Run the concordance with an input file.
 ```
-(concordance) > python concordance.py --input res\example.txt
+(concordance) > python concordance.py --input ..\res\example.txt
 ```
 
 Save concordance output.
 ```
-(concordance) > python concordance.py --input res\example.txt >
+(concordance) > python concordance.py --input ..\res\example.txt >
     output\example.concordance.txt
 ```
 
