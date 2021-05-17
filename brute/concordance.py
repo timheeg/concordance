@@ -22,18 +22,20 @@ class Concordance:
         width = int(count / 26) + 3
         return '{}.'.format(letter.ljust(increment + 1, letter)).ljust(width)
 
-    def output(self):
-        idx = 0
-        for key in self.trie.keys():
-            for word in self.trie[key]:
-                sent_idx = self.sent_map[word]
-                line = '{}{} {{{}:{}}}'.format(
-                    self._item_prefix(idx),
-                    word.ljust(self.max_word_len+4),
-                    len(sent_idx),
-                    ','.join('{}'.format(i) for i in sent_idx))
-                print(line)
-                idx += 1
+    def output(self, file_prefix):
+        filename = "output/{}.concordance.txt".format(file_prefix)
+        with open(filename, 'w') as file:
+            idx = 0
+            for key in self.trie.keys():
+                for word in self.trie[key]:
+                    sent_idx = self.sent_map[word]
+                    line = '{}{} {{{}:{}}}\n'.format(
+                        self._item_prefix(idx),
+                        word.ljust(self.max_word_len+4),
+                        len(sent_idx),
+                        ','.join('{}'.format(i) for i in sent_idx))
+                    file.write(line)
+                    idx += 1
 
     def process_sentence(self, sentence, index):
         doc = self.nlp(sentence)
@@ -61,28 +63,42 @@ class Concordance:
             else:
                 self.sent_map[word] = [index]
 
-    def get_sentences(self, filename):
-        with open(filename) as input_file:
-            contents = input_file.read()
-            doc = self.nlp(contents)
-            return doc.sents
+    def get_sentences(self, contents):
+        doc = self.nlp(contents)
+        return doc.sents
 
 
 def main():
     import argparse
     parser = argparse.ArgumentParser(description="Generate Concordance")
     parser.add_argument("--input", help="Text input file", required=True)
+    parser.add_argument("--debug", help="Dump incremental outputs for debugging",
+                        action="store_true")
     args = parser.parse_args()
+
+    import util.normalize as normalize
+    file_prefix = normalize.get_filename_(args.input)
+
+    reduced_text = normalize.get_reduced_content(args.input)
+    if args.debug:
+        normalize.output_reduced_content(file_prefix, reduced_text)
 
     concordance = Concordance()
 
-    sentences = concordance.get_sentences(args.input)
+    sentences = list(concordance.get_sentences(reduced_text))
+    if args.debug:
+        normalize.output_sentences(file_prefix, sentences)
+
+    reduced_sentences = normalize.reduce_sentences(sentences)
+    if args.debug:
+        normalize.output_sentences(file_prefix + '.reduced', reduced_sentences)
+
     index = 1
-    for sentence in sentences:
+    for sentence in reduced_sentences:
         concordance.process_sentence(sentence.text, index)
         index += 1
 
-    concordance.output()
+    concordance.output(file_prefix)
 
 
 if __name__ == "__main__":
