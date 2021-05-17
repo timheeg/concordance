@@ -180,3 +180,6 @@ The ```/output``` folder contains the results of the concordance
 ## References
 
 Wright State CSE 7380 Cloud Computing personal course notes from 2016.
+
+Python print a string as hex
+https://stackoverflow.com/questions/12214801/print-a-string-as-hexadecimal-bytes
